@@ -106,13 +106,10 @@ prettyprintEuro p = "€" ++ (show p)
 -- Exercise 7  escaping rules
 ---------------------------------------------------------------------
 
---rawtext :: String
---rawtext = "This is a \ \long string,\
--- spanning multiple lines,\
--- in fact 3 lines!"
-
---text :: String
---text = putStr rawtext
+rawtext :: String
+rawtext =  "This is a \\ \\long string,\n\\ \\ spanning multiple lines,\nin fact 3 lines!"
+-- text :: String
+-- text = putStr rawtext
 -- uncomment the above two line, and try text in ghci window...
 
 ---------------------------------------------------------------------
@@ -126,7 +123,7 @@ removeZeroes xs = filter (\x -> x /= 0) xs
 -- Exercise 9.  capslockon
 ---------------------------------------------------------------------
 
-capslockson :: String -> String
+-- capslockson :: String -> String
 
 --------------------------------------------------------------------
 -- Exercise 10.  number of charachters in Char
