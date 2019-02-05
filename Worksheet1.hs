@@ -27,8 +27,8 @@ import Data.Char
 
 type Verb  = String
 
--- pastTense :: Verb -> Verb
--- pastTense  v = ?
+pastTense :: Verb -> Verb
+pastTense  v = v ++ "ed"
 
 ----------------------------------------------------------------------
 -- Exercise 2 
@@ -65,8 +65,12 @@ cost n
 -- if however you are born in 65 (the that must be abbreviation for 1965)
 -- your age is 2018 - 1965 = 53
 
---age :: Year -> Int
---age ?
+type Year = Int
+
+age :: Year -> Int
+age n
+    | n >= 0 && n <= 18 = 18 - n -- people up to 18
+    | n <= 99 = 2018 - (1900 + n)
 
 ---------------------------------------------------------------------
 -- Exercise 5.  Pounds Euros
@@ -77,11 +81,11 @@ type Pounds = Float
 
 eurocurrency = 1.14 :: Float
 
---p2e  :: Pounds -> Euros
---p2e ?
+p2e  :: Pounds -> Euros
+p2e =  (* eurocurrency)
 
---e2p :: Euros -> Pounds
---e2p ?
+e2p :: Euros -> Pounds
+e2p = (/ eurocurrency)
 
 ---------------------------------------------------------------------
 -- Exercise 6.  Pounds Euros refined
@@ -94,6 +98,7 @@ eurocurrency = 1.14 :: Float
 -- given a float, the output should be a string,
 -- first symbol of which is either the euro (€) or pound sign (£) repectively.
 -- Can you manage to output the first two decimals of the float?
+
 prettyprintPound p = "£" ++ (show p)
 prettyprintEuro p = "€" ++ (show p)
 
@@ -102,24 +107,26 @@ prettyprintEuro p = "€" ++ (show p)
 ---------------------------------------------------------------------
 
 --rawtext :: String
---rawtext = ?
+--rawtext = "This is a \ \long string,\
+-- spanning multiple lines,\
+-- in fact 3 lines!"
 
 --text :: String
 --text = putStr rawtext
-
 -- uncomment the above two line, and try text in ghci window...
 
 ---------------------------------------------------------------------
 -- Exercise 8  removeZeroes
 ---------------------------------------------------------------------
 
--- removeZeroes :: [Int] -> [Int]
+removeZeroes :: [Int] -> [Int]
+removeZeroes xs = filter (\x -> x /= 0) xs 
 
 ---------------------------------------------------------------------
 -- Exercise 9.  capslockon
 ---------------------------------------------------------------------
 
--- capslockson :: String -> String
+capslockson :: String -> String
 
 --------------------------------------------------------------------
 -- Exercise 10.  number of charachters in Char
