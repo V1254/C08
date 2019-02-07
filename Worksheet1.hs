@@ -123,7 +123,8 @@ removeZeroes xs = filter (/=0) xs
 -- Exercise 9.  capslockon
 ---------------------------------------------------------------------
 
--- capslockson :: String -> String
+capslockson :: String -> String
+capslockson s = map (\x -> if (isLower x) then (toUpper x) else toLower x) s
 
 --------------------------------------------------------------------
 -- Exercise 10.  number of charachters in Char
