@@ -117,7 +117,7 @@ rawtext =  "This is a \\ \\long string,\n\\ \\ spanning multiple lines,\nin fact
 ---------------------------------------------------------------------
 
 removeZeroes :: [Int] -> [Int]
-removeZeroes xs = filter (\x -> x /= 0) xs 
+removeZeroes xs = filter (/=0) xs 
 
 ---------------------------------------------------------------------
 -- Exercise 9.  capslockon
