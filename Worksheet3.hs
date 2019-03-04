@@ -34,15 +34,23 @@ skipall n list = take (n-1) list ++ skipall n (drop n list)
 
 --First write homerge that merges two sorted lists into a sorted list
 
---homerge :: Ord b => (a -> b) -> [a] -> [a] -> [a]
+homerge :: Ord b => (a -> b) -> [a] -> [a] -> [a]
+homerge fun [] [] = []
+homerge fun k [] = k
+homerge fun [] k = k
+homerge fun (x:xs) (y:ys) 
+    | fun x < fun y = x:(homerge fun xs (y:ys))
+    | otherwise = y:homerge fun (x:xs) ys
 
    
 --Now write the higher order merge sort
 
---hoMergeSort :: Ord b => (a -> b)  -> [a] -> [a]
-
-
-
+hoMergeSort :: Ord b => (a -> b)  -> [a] -> [a]
+hoMergeSort k [] = []
+hoMergeSort k [x] = [x]
+hoMergeSort fun list = homerge fun (hoMergeSort fun xs) (hoMergeSort fun ys)
+    where (xs,ys) = (take leng list, drop leng list)
+                where leng = (length list) `div` 2
 
 ----------------------------------------------------------------------
 -- Exercise 3
@@ -55,27 +63,42 @@ type Mark = Int
 
 type Spreadsheet = [(Lastname, Username, Mark)]
 
+getLastName (x,y,z) = x
+getUserName (x,y,z) = y
+getNegativeMark (x,y,z) = -z
 
---sortLastname :: Spreadsheet ->  Spreadsheet
+sortLastname :: Spreadsheet ->  Spreadsheet
+sortLastname spreadSheet = hoMergeSort getLastName spreadSheet
 
---sortUsername :: Spreadsheet ->  Spreadsheet
+sortUsername :: Spreadsheet ->  Spreadsheet
+sortUsername spreadSheet = hoMergeSort getUserName spreadSheet
 
---sortMark :: Spreadsheet ->  Spreadsheet
-
-
+sortMark :: Spreadsheet ->  Spreadsheet
+sortMark spreadSheet = hoMergeSort getNegativeMark spreadSheet
 
 ----------------------------------------------------------------------
 -- Exercise 4
 ---------------------------------------------------------------------
 
 
---smallest :: Ord a => a -> [a] -> a
+smallest :: Ord a => [a] -> a
+smallest [] = error "Smallest of Empty List is not possible :("
+smallest [x] = x
+smallest (x:(y:z)) 
+    | x <= y = smallest (x:z)
+    | otherwise = smallest (y:z)
 
---delete :: Ord a => a -> [a] -> [a]
+delete :: Ord a => a -> [a] -> [a]
+delete _ [] = []
+delete k (x:xs)
+    | x == k = xs
+    | otherwise = x:(delete k xs)
 
---bucketsort :: Ord a => [a] ->  [a]
 
-
+bucketsort :: Ord a => [a] ->  [a]
+bucketsort [k] = [k]
+bucketsort list = value:bucketsort (delete value list)
+    where value = smallest list
 ----------------------------------------------------------------------
 -- Exercise 5
 ---------------------------------------------------------------------
@@ -89,7 +112,10 @@ type Tile = [String]
 -- Part a)
 
 
---makeTile :: Char -> Int -> [String]
+makeTile :: Char -> Int -> [String]
+makeTile c 0 = []
+makeTile c n = [take n (repeat c) | _ <- [1..y]]
+    where y = n `div` 2
 
 
 -- Part b)
@@ -99,15 +125,17 @@ type Tile = [String]
 -- ****
 -- using the following function (remove comments after writing tile2string)
 
---printTile :: Tile -> IO()
---printTile tile = putStr(tile2string (tile))
+printTile :: Tile -> IO()
+printTile tile = putStr(tile2string (tile))
 
 
 -- here tile2 string should convert the tile ["****","****"]
 -- into the string "\n****\n****\n" (remember the newline character!)
 -- tile2string ["****","****"] = "\n****\n****\n"
 
---tile2string :: [String] -> String
+tile2string :: [String] -> String
+tile2string [] = "\n"
+tile2string (x:xs) = "\n" ++ x ++ (tile2string xs)
 
 
 -- Part c)
@@ -118,8 +146,8 @@ type Tile = [String]
 --                                    ***
 --                                    ***
  
---vglue :: Tile -> Tile -> Tile
-
+vglue :: Tile -> Tile -> Tile
+vglue tile1 tile2 = tile1 ++ tile2
 
 
 -- Part d)
@@ -129,7 +157,11 @@ type Tile = [String]
 -- gluing of *&* and  *** should give *&****
 --           ***      ***             ******
 
---hglue :: Tile -> Tile -> Tile
+hglue :: Tile -> Tile -> Tile
+hglue [] [] = []
+hglue [] k = k
+hglue k [] = k
+hglue (x:xs) (y:ys) = (x ++ y) : hglue xs ys
 
 -- Part e)
 
@@ -140,8 +172,8 @@ type Tile = [String]
 type Board = [[Tile]]
 
 --Next function: delete comments after writing board2tile
---printBoard :: Board -> IO()
---printBoard board = printTile (board2tile board )
+printBoard :: Board -> IO()
+printBoard board = printTile (board2tile board )
 
 -- to print a board we first glue all its tiles together
 -- using a function board2tile :: Board -> Tile
@@ -149,13 +181,17 @@ type Board = [[Tile]]
 --
 -- col2tile  will glue a column of tiles vertically to a tile
 
---col2tile :: [Tile]->Tile
+col2tile :: [Tile]->Tile
+col2tile [k] = k
+col2tile (x:xs) = vglue x (col2tile xs)
 
 
 
 -- row2tile  will glue a row of tiles horizontally to a tile
 
---row2tile :: [Tile]->Tile
+row2tile :: [Tile]->Tile
+row2tile [k] = k
+row2tile (x:xs) = hglue x (row2tile xs)
 
 
 -- Part f)
@@ -164,7 +200,8 @@ type Board = [[Tile]]
 -- then we can convert a board into a tile using  
 -- col2tile and row2tile
 
---board2tile :: Board ->Tile
+board2tile :: Board ->Tile
+board2tile b = col2tile (map row2tile b)
 
 
 -- Part g)
@@ -172,8 +209,8 @@ type Board = [[Tile]]
 -- if we can now make a function that "prints" an adge around a tile,
 --  we can print boards with an edge.
 
---printBoardWithEdge :: Board -> IO()
---printBoardWithEdge board = printTile (edge (board2tile board ))
+printBoardWithEdge :: Board -> IO()
+printBoardWithEdge board = printTile (edge (board2tile board ))
 
 
 
@@ -185,8 +222,15 @@ type Board = [[Tile]]
 -- .----.
 -- edge (makeTile '*' 4) = [".----.","|****|","|****|",".----."]
 
---edge :: Tile -> Tile
+-- creates a tile ".n." where n is '-' number of values in the tile
+topRow n = "." ++ (take n (repeat '-')) ++ "."
 
+-- adds "|" to the start and end of a tile
+sides list = "|"  ++ list ++ "|"
+
+edge :: Tile -> Tile
+edge tile = [topRow n] ++  map sides tile ++ [topRow n]
+    where n = length (head tile)
 
 -- Part h)
 
@@ -207,12 +251,17 @@ type Board = [[Tile]]
 -- |****    ****    |
 -- .----------------.
 
---chessboard :: Int -> Board
+chessboard :: Int -> Board
+chessboard n = map getRow [1..n]
+    where   getRow x = if x `mod` 2 == 1 then black else white
+            black = map getTile [0..(n-1)]
+            white = map getTile [1..n]
+            getTile y = if y `mod` 2 == 0 then makeTile '*' n else makeTile ' ' n
 
 
 -- with the following function you can print such boards:
 
---chess :: Int -> IO()
---chess n = printBoardWithEdge (chessboard n)
+chess :: Int -> IO()
+chess n = printBoardWithEdge (chessboard n)
 
 
