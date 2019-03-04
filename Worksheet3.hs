@@ -35,12 +35,12 @@ skipall n list = take (n-1) list ++ skipall n (drop n list)
 --First write homerge that merges two sorted lists into a sorted list
 
 homerge :: Ord b => (a -> b) -> [a] -> [a] -> [a]
-homerge fun [] [] = []
-homerge fun k [] = k
-homerge fun [] k = k
-homerge fun (x:xs) (y:ys) 
-    | fun x < fun y = x:(homerge fun xs (y:ys))
-    | otherwise = y:homerge fun (x:xs) ys
+homerge f [] [] = []
+homerge f k [] = k
+homerge f [] k = k
+homerge f (x:xs) (y:ys) 
+    | f x < f y = x:(homerge f xs (y:ys))
+    | otherwise = y:homerge f (x:xs) ys
 
    
 --Now write the higher order merge sort
@@ -48,7 +48,7 @@ homerge fun (x:xs) (y:ys)
 hoMergeSort :: Ord b => (a -> b)  -> [a] -> [a]
 hoMergeSort k [] = []
 hoMergeSort k [x] = [x]
-hoMergeSort fun list = homerge fun (hoMergeSort fun xs) (hoMergeSort fun ys)
+hoMergeSort f list = homerge f (hoMergeSort f xs) (hoMergeSort f ys)
     where (xs,ys) = (take leng list, drop leng list)
                 where leng = (length list) `div` 2
 
