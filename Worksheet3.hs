@@ -221,9 +221,12 @@ printBoardWithEdge board = printTile (edge (board2tile board ))
 -- |****|
 -- .----.
 -- edge (makeTile '*' 4) = [".----.","|****|","|****|",".----."]
+----------------------
 
 -- creates a tile ".n." where n is '-' number of values in the tile
 topRow n = "." ++ (take n (repeat '-')) ++ "."
+
+---
 
 -- adds "|" to the start and end of a tile
 sides list = "|"  ++ list ++ "|"
@@ -252,11 +255,11 @@ edge tile = [topRow n] ++  map sides tile ++ [topRow n]
 -- .----------------.
 
 chessboard :: Int -> Board
-chessboard n = map getRow [1..n]
-    where   getRow x = if x `mod` 2 == 1 then black else white
-            black = map getTile [0..(n-1)]
-            white = map getTile [1..n]
-            getTile y = if y `mod` 2 == 0 then makeTile '*' n else makeTile ' ' n
+chessboard n = map generateRow [1..n]
+    where   generateRow x = if x `mod` 2 == 0 then black else white
+            black = map generateTile  [0..(n-1)]
+            white = map generateTile [1..n]
+            generateTile  y = if y `mod` 2 == 0 then makeTile '*' n else makeTile ' ' n
 
 
 -- with the following function you can print such boards:
