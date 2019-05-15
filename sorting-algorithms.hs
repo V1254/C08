@@ -1,5 +1,6 @@
 {-
     Demonstration of different sorting algorithms , focusing on correctness first and efficiency second.
+    
 -}
 
 {-
@@ -41,6 +42,35 @@ selectionSort [] = []
 selectionSort xs = minVal:(selectionSort (delete minVal xs))  -- haskell you cant really swap so you just delete the first occurence here instead.
                     where minVal = minimum xs
 
+
+{-
+    MergeSort: Merges sorted lists by repeatededly dividing the list until one elemnt is left (hence sorted)
+-}
+
+-- first a function to merge two sorted lists.
+
+merge :: Ord a => [a] -> [a] -> [a]
+merge [] k = k
+merge k [] = k
+merge (a:as) (b:bs)
+ | a <= b = a:(merge as (b:bs))
+ | otherwise = b:(merge (a:as) bs)
+
+-- now a function to halve a list.
+halve :: [a] -> ([a],[a])
+halve xs = (take n xs , drop n xs)
+            where n = (length xs) `div` 2
+
+
+-- The algorithm itself.
+mergeSort :: Ord a => [a] -> [a]
+mergeSort [] = []
+mergeSort [x] = [x]
+mergeSort list = merge (mergeSort firstHalf) (mergeSort secondHalf)
+                        where 
+                             firstHalf  = fst halves
+                             secondHalf = snd halves
+                             halves = halve list
 
 
 
