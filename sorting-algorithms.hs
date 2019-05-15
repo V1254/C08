@@ -72,6 +72,20 @@ mergeSort list = merge (mergeSort firstHalf) (mergeSort secondHalf)
                              secondHalf = snd halves
                              halves = halve list
 
+{-
+    QuickSort: select a pivot, place all element that are smaller before the pivot and bigger elements after the pivot,
+        do this recursively.
+-}
+
+quickSort :: Ord a => [a] -> [a]
+quickSort [] = []
+quickSort [a] = [a]
+quickSort (x:xs) = quickSort (ls) ++ [x] ++ quickSort (us)
+                    where ls = filter (<= x) xs
+                          us = filter (> x) xs 
+                          
+
+
 
 
 
