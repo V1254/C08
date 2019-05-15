@@ -86,6 +86,28 @@ quickSort (x:xs) = quickSort (ls) ++ [x] ++ quickSort (us)
                           
 
 
+{-
+    BubbleSort : take two elements sort em, continue down the list and repeat till no swaps are performed anymore.
+-}
+
+
+-- places the first element of a list into the correct position by repeatededly comparing it to the second element until it is in the correct positon.
+
+bubbleSwap :: Ord a => [a] -> [a]
+bubbleSwap [] = []
+bubbleSwap [a] = [a]
+bubbleSwap (x:y:z)
+ | x < y = x:(bubbleSwap (y:z))
+ | otherwise = y:(bubbleSwap (x:z))
+
+
+bubbleSort :: Ord a => [a] -> [a]
+bubbleSort list 
+ | (bubbleSwap list) == list = list                  -- stop the algorithm if the result of the swapped list is the same as the input.
+ | otherwise = bubbleSort (bubbleSwap list)          -- continue the algorithm if a swap was made hence the list and the slightly sorted list are not the same.
+                    
+
+
 
 
 
